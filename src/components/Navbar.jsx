@@ -9,7 +9,7 @@ const Navbar = ({ children }) => {
             className={({ isActive }) =>
               isActive
                 ? "text-[#65B741] text-xl font-sans font-medium hover:underline"
-                : " text-xl"
+                : " text-xl text-white"
             }
             to={"/"}
           >
@@ -21,7 +21,7 @@ const Navbar = ({ children }) => {
             className={({ isActive }) =>
               isActive
                 ? "text-[#65B741] text-xl  font-sans font-medium hover:underline"
-                : "text-xl"
+                : "text-xl text-white"
             }
             to={"/task"}
           >
@@ -34,7 +34,7 @@ const Navbar = ({ children }) => {
             className={({ isActive }) =>
               isActive
                 ? "text-[#65B741] font-sans font-medium text-xl hover:underline"
-                : "text-xl"
+                : "text-xl text-white"
             }
             to={"/registration"}
           >
@@ -45,11 +45,11 @@ const Navbar = ({ children }) => {
     </>
   );
   return (
-    <div className="drawer">
+    <div className="drawer fixed">
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col">
         {/* Navbar */}
-        <div className="w-full navbar bg-base-300">
+        <div className="w-full navbar bg-opacity-30 bg-black">
           <div className="flex-none lg:hidden">
             <label
               htmlFor="my-drawer-3"
