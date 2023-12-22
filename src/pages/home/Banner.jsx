@@ -14,7 +14,7 @@ const Banner = () => {
        text-neutral-content"
       >
         <div className=" ">
-          <h1 className="mb-5 text-3xl md:text-5xl tracking-widest  text-white font-bold">
+          <h1 className="mb-5 pt-20 text-3xl md:text-5xl tracking-widest  text-white font-bold">
             Take Full <br /> Control <br />
             Of Your {""}
             <span className="text-[#65B741]">TASKS</span>

@@ -3,7 +3,8 @@ import Main from "../components/layout/Main";
 import Home from "../pages/home/Home";
 import Login from "../pages/Login";
 import Registration from "../pages/Registration";
-import Task from "../pages/task/Task";
+import Dashboard from "../pages/dashboard/Dashboard";
+import PrivateRoute from "./PrivateRoute";
 
 const router = createBrowserRouter([
   {
@@ -26,8 +27,12 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "task",
-    element: <Task></Task>,
+    path: "dashboard",
+    element: (
+      <PrivateRoute>
+        <Dashboard></Dashboard>
+      </PrivateRoute>
+    ),
   },
 ]);
 

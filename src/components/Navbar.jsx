@@ -1,6 +1,10 @@
+import { useContext } from "react";
 import { NavLink } from "react-router-dom";
+import { AuthContext } from "../provider/AuthProvider";
+import toast from "react-hot-toast";
 
 const Navbar = ({ children }) => {
+  const { user, loggedOut } = useContext(AuthContext);
   const navLinks = (
     <>
       <div className=" md:flex justify-center items-center gap-4 ">
@@ -23,29 +27,42 @@ const Navbar = ({ children }) => {
                 ? "text-[#65B741] text-xl  font-sans font-medium hover:underline"
                 : "text-xl text-white"
             }
-            to={"/task"}
+            to={"/dashboard"}
           >
-            Task
+            Dashboard
           </NavLink>
         </div>
 
-        <div>
-          <NavLink
-            className={({ isActive }) =>
-              isActive
-                ? "text-[#65B741] font-sans font-medium text-xl hover:underline"
-                : "text-xl text-white"
-            }
-            to={"/login"}
-          >
-            Login
-          </NavLink>
-        </div>
+        {!user && (
+          <div>
+            <NavLink
+              className={({ isActive }) =>
+                isActive
+                  ? "text-[#65B741] font-sans font-medium text-xl hover:underline"
+                  : "text-xl text-white"
+              }
+              to={"/login"}
+            >
+              Login
+            </NavLink>
+          </div>
+        )}
       </div>
     </>
   );
+
+  const handleLogOut = () => {
+    loggedOut()
+      .then(() => {
+        // console.log(result);
+        toast.success("User logout successfully");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   return (
-    <div className="drawer fixed">
+    <div className="drawer fixed ">
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col">
         {/* Navbar */}
@@ -71,13 +88,34 @@ const Navbar = ({ children }) => {
               </svg>
             </label>
           </div>
-          <div className="flex-1 px-2 mx-2 text-xl font-medium text-[#65B741]">
+          <div className="flex-none px-2 mx-2 text-xl font-medium text-[#65B741]">
             Work Flow
           </div>
-          <div className="flex-none hidden lg:block">
+          <div className="flex-1  hidden mx-72 lg:block">
             <div className="menu menu-horizontal">
               {/* Navbar menu content here */}
               {navLinks}
+            </div>
+          </div>
+          {/* big device user info */}
+          <div className="hidden lg:block">
+            <div className="dropdown dropdown-bottom">
+              <div tabIndex={0} role="button" className=" m-1">
+                <img
+                  className="w-10 rounded-full"
+                  src={user?.photoURL}
+                  alt=""
+                />
+              </div>
+              <ul
+                tabIndex={0}
+                className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+              >
+                <li>{user?.displayName}</li>
+                <li>
+                  <button onClick={handleLogOut}>Logout</button>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -90,9 +128,31 @@ const Navbar = ({ children }) => {
           aria-label="close sidebar"
           className="drawer-overlay"
         ></label>
-        <div className="menu p-4 w-80 min-h-fdivl bg-base-200">
+        <div className="menu p-4 w-80 min-h-full bg-base-200">
           {/* Sidebar content here */}
           {navLinks}
+          {/* small device user info */}
+          <div className="block  lg:hidden">
+            <div className="dropdown  dropdown-right">
+              <div tabIndex={0} role="button" className=" m-1">
+                <img
+                  className="w-10 rounded-full"
+                  src={user?.photoURL}
+                  alt=""
+                />
+              </div>
+
+              <ul
+                tabIndex={0}
+                className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+              >
+                <li>{user?.displayName}</li>
+                <li>
+                  <button onClick={handleLogOut}>Logout</button>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>

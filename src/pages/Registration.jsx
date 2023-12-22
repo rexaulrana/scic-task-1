@@ -1,17 +1,23 @@
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../provider/AuthProvider";
+import { getAuth, updateProfile } from "firebase/auth";
+import toast, { Toaster } from "react-hot-toast";
+import app from "../firebase/firebase.config";
 
 const Registration = () => {
   // const[error,setError]=useState('')
-  // const { createUser, handleGoogle } = useContext(AuthContext);
+  const auth = getAuth(app);
+
+  const { createUser, googleLogin } = useContext(AuthContext);
   // const axiosPublic = useAxiosPublic();
   const [showPass, setShowPass] = useState(false);
   //   const [error, setError] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  let from = location.state?.from?.pathname || "task";
+  let from = location.state?.from?.pathname || "/dashboard";
   const {
     register,
     handleSubmit,
@@ -19,26 +25,40 @@ const Registration = () => {
     formState: { errors },
   } = useForm();
   const onSubmit = (data) => {
-    console.log(data);
+    createUser(data?.email, data?.password)
+      .then((result) => {
+        console.log(result.user);
+        // update profile
+        updateProfile(auth.currentUser, {
+          displayName: data?.name,
+          photoURL: data?.photo,
+        })
+          .then(() => {
+            toast.success("Registration successful");
+
+            navigate(from, { replace: true });
+            reset();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+        // error
+      });
   };
-  // const handleGoogleLog = () => {
-  //   handleGoogle()
-  //     .then((result) => {
-  //       // console.log(result);
-  //       toast.success("user login successfully");
-  //       navigate(from, { replace: true });
-  //       const userInfo = {
-  //         name: result?.user?.displayName,
-  //         email: result?.user?.email,
-  //       };
-  //       axiosPublic.post("/users", userInfo).then((result) => {
-  //         console.log("user added", result);
-  //       });
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // };
+  const handleGoogleLog = () => {
+    googleLogin()
+      .then((result) => {
+        // console.log(result);
+        toast.success("user login successfully");
+        navigate(from, { replace: true });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <div className="py-6 lg:flex justify-center items-center gap-10 bg-fixed bg-[#65B741] bg-cover bg-no-repeat bg-center opacity-90">
       <div
@@ -49,7 +69,6 @@ const Registration = () => {
           Registration Today
         </h2>
 
-        <div></div>
         <form onSubmit={handleSubmit(onSubmit)} className="">
           <div className="form-control  w-full">
             <label className="label">
@@ -150,11 +169,15 @@ const Registration = () => {
 
           {/* <input type="btn " className="btn btn-accent mt-2  w-full " /> */}
           <button className="btn btn-accent mt-2  w-full ">Submit</button>
+          <Toaster></Toaster>
         </form>
 
         <div className="flex justify-center mt-1 mb-1">
           {" "}
-          <button className="btn btn-outline flex justify-center items-center gap-2 text-black">
+          <button
+            onClick={handleGoogleLog}
+            className="btn btn-outline flex justify-center items-center gap-2 text-black"
+          >
             {" "}
             <span>
               <FaGoogle></FaGoogle>
