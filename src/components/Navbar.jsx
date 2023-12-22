@@ -36,9 +36,9 @@ const Navbar = ({ children }) => {
                 ? "text-[#65B741] font-sans font-medium text-xl hover:underline"
                 : "text-xl text-white"
             }
-            to={"/registration"}
+            to={"/login"}
           >
-            Registration
+            Login
           </NavLink>
         </div>
       </div>
