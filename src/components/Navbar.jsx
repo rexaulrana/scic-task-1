@@ -1,10 +1,22 @@
 import { useContext } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
 import toast from "react-hot-toast";
 
 const Navbar = ({ children }) => {
   const { user, loggedOut } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const handleLogOut = () => {
+    loggedOut()
+      .then(() => {
+        // console.log(result);
+        toast.success("User logout successfully");
+        navigate("/");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   const navLinks = (
     <>
       <div className=" md:flex justify-center items-center gap-4 ">
@@ -33,7 +45,7 @@ const Navbar = ({ children }) => {
           </NavLink>
         </div>
 
-        {!user && (
+        {!user ? (
           <div>
             <NavLink
               className={({ isActive }) =>
@@ -46,23 +58,37 @@ const Navbar = ({ children }) => {
               Login
             </NavLink>
           </div>
+        ) : (
+          <div onClick={handleLogOut}>
+            <NavLink
+              className={({ isActive }) =>
+                isActive
+                  ? "text-white font-sans font-normal text-xl hover:underline"
+                  : "text-xl "
+              }
+            >
+              Logout
+            </NavLink>
+          </div>
         )}
+        <div>
+          <NavLink
+            className={({ isActive }) =>
+              isActive
+                ? "text-[#65B741] font-sans font-medium text-xl hover:underline"
+                : "text-xl text-white"
+            }
+            to={"/about"}
+          >
+            About
+          </NavLink>
+        </div>
       </div>
     </>
   );
 
-  const handleLogOut = () => {
-    loggedOut()
-      .then(() => {
-        // console.log(result);
-        toast.success("User logout successfully");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
   return (
-    <div className="drawer fixed ">
+    <div className="drawer fixed z-10 ">
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col">
         {/* Navbar */}
@@ -99,13 +125,16 @@ const Navbar = ({ children }) => {
           </div>
           {/* big device user info */}
           <div className="hidden lg:block">
-            <div className="dropdown dropdown-bottom">
+            <div className="dropdown dropdown-end">
               <div tabIndex={0} role="button" className=" m-1">
-                <img
-                  className="w-10 rounded-full"
-                  src={user?.photoURL}
-                  alt=""
-                />
+                {user?.displayName && (
+                  <h1
+                    title="setting"
+                    className="bg-[#65B741] text-white p-3 rounded-full"
+                  >
+                    {user?.displayName.slice(0, 2)}
+                  </h1>
+                )}
               </div>
               <ul
                 tabIndex={0}
@@ -120,7 +149,7 @@ const Navbar = ({ children }) => {
           </div>
         </div>
         {/* Page content here */}
-        {children}{" "}
+        {children}
       </div>
       <div className="drawer-side">
         <label
@@ -133,7 +162,7 @@ const Navbar = ({ children }) => {
           {navLinks}
           {/* small device user info */}
           <div className="block  lg:hidden">
-            <div className="dropdown  dropdown-right">
+            <div className="dropdown  dropdown-bottom">
               <div tabIndex={0} role="button" className=" m-1">
                 <img
                   className="w-10 rounded-full"
